@@ -1,1 +1,57 @@
-<p>book-list works!</p>
+<div class="book-list-container">
+  <div class="content-wrapper">
+    
+    <div class="header-section">
+      <h1 class="page-title">Reading List</h1>
+      <div class="search-box">
+        <input
+          type="text"
+          placeholder="Search by title or author..."
+          [value]="searchTerm"
+          (input)="onSearch($event)"
+          class="search-input"
+        />
+      </div>
+    </div>
+
+    <div class="book-grid">
+      @for (book of books; track book.id) {
+        <div class="book-card">
+          <div class="cover-placeholder">
+            <span>COVER</span>
+          </div>
+          <h2 class="book-title" [title]="book.title">{{ book.title }}</h2>
+          <p class="book-author">{{ book.author }}</p>
+          <p class="book-description">
+            {{ book.description || 'No description available for this title.' }}
+          </p>
+        </div>
+      } @empty {
+        <div class="empty-state">
+          No books found matching "{{ searchTerm }}".
+        </div>
+      }
+    </div>
+
+    <div class="pagination-section">
+      <button
+        class="btn-prev"
+        (click)="onPageChange(currentPage - 1)"
+        [disabled]="currentPage === 1">
+        Previous
+      </button>
+      
+      <span class="page-info">
+        Page {{ currentPage }} of {{ totalPages }}
+      </span>
+      
+      <button
+        class="btn-next"
+        (click)="onPageChange(currentPage + 1)"
+        [disabled]="currentPage === totalPages">
+        Next
+      </button>
+    </div>
+
+  </div>
+</div>
