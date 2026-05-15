@@ -1,0 +1,52 @@
+<div class="form-container">
+  <h2>{{ isEditMode ? 'Edit Book' : 'Add New Book' }}</h2>
+
+  <form [formGroup]="bookForm" (ngSubmit)="onSubmit()">
+    
+    <div class="form-group">
+      <label for="title">Book Title *</label>
+      <input id="title" type="text" formControlName="title"
+             [class.is-invalid]="f['title'].invalid && f['title'].touched">
+      
+      <div *ngIf="f['title'].invalid && f['title'].touched" class="error-msg">
+        <small *ngIf="f['title'].errors?.['required']">A book title is required.</small>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="author">Author *</label>
+      <input id="author" type="text" formControlName="author"
+             [class.is-invalid]="f['author'].invalid && f['author'].touched">
+             
+      <div *ngIf="f['author'].invalid && f['author'].touched" class="error-msg">
+        <small *ngIf="f['author'].errors?.['required']">Author name is required.</small>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="category">Category *</label>
+      <select id="category" formControlName="category" [class.is-invalid]="f['category'].invalid && f['category'].touched">
+        <option value="" disabled>Select a category</option>
+        <option value="Technology">Technology</option>
+        <option value="Fiction">Fiction</option>
+        <option value="Science">Science</option>
+      </select>
+      <div *ngIf="f['category'].invalid && f['category'].touched" class="error-msg">
+        <small>Please select a category.</small>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="shortDesc">Short Description *</label>
+      <textarea id="shortDesc" rows="3" formControlName="shortDesc"
+                [class.is-invalid]="f['shortDesc'].invalid && f['shortDesc'].touched"></textarea>
+      <div *ngIf="f['shortDesc'].invalid && f['shortDesc'].touched" class="error-msg">
+        <small *ngIf="f['shortDesc'].errors?.['required']">Please provide a brief description.</small>
+      </div>
+    </div>
+
+    <button type="submit" class="submit-btn">
+      {{ isEditMode ? 'Save Changes' : 'Add Book' }}
+    </button>
+  </form>
+</div>
