@@ -4,13 +4,7 @@
     <div class="header-section">
       <h1 class="page-title">Reading List</h1>
       <div class="search-box">
-        <input
-          type="text"
-          placeholder="Search by title or author..."
-          [value]="searchTerm"
-          (input)="onSearch($event)"
-          class="search-input"
-        />
+        <input type="text" placeholder="Search by title or author..." [value]="searchTerm" (input)="onSearch($event)" class="search-input" />
       </div>
     </div>
 
@@ -23,34 +17,28 @@
           <h2 class="book-title" [title]="book.title">{{ book.title }}</h2>
           <p class="book-author">{{ book.author }}</p>
           <p class="book-description">
-            {{ book.description || 'No description available for this title.' }}
+            {{ book.shortDesc || 'No description available for this title.' }}
           </p>
+
+          <div class="card-actions" style="display: flex; gap: 10px; margin-top: 15px; padding-top: 10px; border-top: 1px solid #eee;">
+            <button (click)="onEditClick(book)" style="background-color: #4a7c59; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; flex: 1;">✏️ Edit</button>
+            <button (click)="onDeleteClick(book.id)" style="background-color: #c94c4c; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; flex: 1;">🗑️ Delete</button>
+          </div>
         </div>
       } @empty {
-        <div class="empty-state">
-          No books found matching "{{ searchTerm }}".
-        </div>
+        <div class="empty-state">No books found matching "{{ searchTerm }}".</div>
       }
     </div>
 
     <div class="pagination-section">
-      <button
-        class="btn-prev"
-        (click)="onPageChange(currentPage - 1)"
-        [disabled]="currentPage === 1">
-        Previous
-      </button>
+      <!-- Previous: Go to currentPage - 1 -->
+      <button class="btn-prev" (click)="onPageChange(currentPage - 1)" [disabled]="currentPage === 0">Previous</button>
       
-      <span class="page-info">
-        Page {{ currentPage }} of {{ totalPages }}
-      </span>
+      <!-- Display: 0-based index + 1 -->
+      <span class="page-info">Page {{ currentPage + 1 }} of {{ totalPages }}</span>
       
-      <button
-        class="btn-next"
-        (click)="onPageChange(currentPage + 1)"
-        [disabled]="currentPage === totalPages">
-        Next
-      </button>
+      <!-- Next: Go to currentPage + 1 -->
+      <button class="btn-next" (click)="onPageChange(currentPage + 1)" [disabled]="currentPage + 1 >= totalPages">Next</button>
     </div>
 
   </div>

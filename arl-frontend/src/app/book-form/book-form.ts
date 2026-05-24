@@ -1,42 +1,72 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject, Input, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { BookService, Book } from '../services/book';
 
 @Component({
   selector: 'app-book-form',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
-  templateUrl: './book-form.html', /* Matched to your exact file name */
-  styleUrl: './book-form.css'      /* Matched to your exact file name */
+  templateUrl: './book-form.html',
+  styleUrls: ['./book-form.css']
 })
 export class BookFormComponent implements OnInit {
-  bookForm!: FormGroup;
-  isEditMode: boolean = false; 
+  private fb = inject(FormBuilder);
+  private bookService = inject(BookService);
 
-  constructor(private fb: FormBuilder) {}
+  @Input() editTargetBook: Book | null = null; // Passed from parent if editing
+  @Output() formViewFinished = new EventEmitter<void>(); // Signals parent to return to the list grid layout
+
+  bookForm!: FormGroup;
+  isEditMode = false;
 
   ngOnInit(): void {
-    // Strict validation rules for the Excellent rubric criteria
     this.bookForm = this.fb.group({
-      title: ['', [Validators.required, Validators.maxLength(255)]],
-      author: ['', [Validators.required, Validators.maxLength(50)]],
-      category: ['', [Validators.required, Validators.maxLength(30)]],
-      shortDesc: ['', [Validators.required, Validators.maxLength(255)]]
+      title: ['', Validators.required],
+      author: ['', Validators.required],
+      category: ['', Validators.required],
+      shortDesc: ['', Validators.required]
     });
+
+    // Check if we are editing an existing record passed down from the parent layout
+    if (this.editTargetBook) {
+      this.isEditMode = true;
+      this.bookForm.patchValue(this.editTargetBook);
+    }
   }
 
-  // Helper to make HTML cleaner
-  get f() { return this.bookForm.controls; }
+  get f() {
+    return this.bookForm.controls;
+  }
 
   onSubmit(): void {
     if (this.bookForm.invalid) {
-      // Force all red error messages to show if they try to submit an empty form
       this.bookForm.markAllAsTouched();
       return;
     }
 
-    // If valid, grab the data!
     const formData = this.bookForm.value;
-    console.log(this.isEditMode ? 'Updating...' : 'Saving new...', formData);
+
+    if (this.isEditMode && this.editTargetBook?.id) {
+      this.bookService.updateBook(this.editTargetBook.id, formData).subscribe({
+        next: () => {
+          alert('Book details updated successfully!');
+          this.formViewFinished.emit();
+        },
+        error: (err) => console.error('Update operation failed:', err)
+      });
+    } else {
+      this.bookService.createBook(formData).subscribe({
+        next: () => {
+          alert('New book added to catalog successfully!');
+          this.formViewFinished.emit();
+        },
+        error: (err) => console.error('Save operation failed:', err)
+      });
+    }
+  }
+
+  onCancel(): void {
+    this.formViewFinished.emit();
   }
 }

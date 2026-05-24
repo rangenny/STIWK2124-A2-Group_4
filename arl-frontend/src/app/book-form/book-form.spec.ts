@@ -1,20 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { BookFormComponent } from './book-form'; // Pointing to the new exported class
 
-import { BookForm } from './book-form';
-
-describe('BookForm', () => {
-  let component: BookForm;
-  let fixture: ComponentFixture<BookForm>;
+describe('BookFormComponent', () => {
+  let component: BookFormComponent;
+  let fixture: ComponentFixture<BookFormComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [BookForm]
+      imports: [BookFormComponent] // Imports standalone component directly
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(BookForm);
+    fixture = TestBed.createComponent(BookFormComponent);
     component = fixture.componentInstance;
-    await fixture.whenStable();
+    fixture.detectChanges();
   });
 
   it('should create', () => {
