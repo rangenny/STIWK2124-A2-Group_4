@@ -27,6 +27,16 @@ export class BookList implements OnInit {
     this.loadBooks();
   }
 
+readAloud(title: string, author: string, description: string) {
+    const speech = new SpeechSynthesisUtterance();
+    
+    const descToRead = description ? description : 'No description available.';
+    const authorToRead = author ? author : 'Unknown author';
+    
+    speech.text = `Title: ${title}. By ${authorToRead}. Description: ${descToRead}`;
+    window.speechSynthesis.speak(speech);
+  }
+  
   loadBooks(): void {
     // We send the current page and current searchTerm to the backend
     this.bookService.getBooks(this.currentPage, this.pageSize, this.searchTerm).subscribe({
